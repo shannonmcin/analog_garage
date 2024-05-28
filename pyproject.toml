@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools >= 66.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "analog_garage_test"
+version = "0.1"
+description = "SMS Message Simulation"
+readme = "README.md"
+requires-python = "= 3.12"
+authors = [
+    {name = "Shannon McInnis", email = "shannonmcin@gmail.com"}
+]
+
+[project.scripts]
+producer = "analog_garage_test.producer.main:main"
+sender = "analog_garage_test.sender.main:main"
+web_monitor = "analog_garage_test.progress_monitor.main:web_monitor"
+cli_monitor = "analog_garage_test.progress_monitor.main:cli_monitor"
+
+[tool.setuptools.packages.find]
+where = ["src"]
