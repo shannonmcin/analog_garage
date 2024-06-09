@@ -3,13 +3,13 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class SmsMessage:
-    text: str
-    dest: str
+class StatsMessage:
+    success: bool
+    time_waited: float
 
     def to_json_string(self) -> str:
         return json.dumps(self.__dict__)
 
     @classmethod
-    def from_json_string(cls, js: str) -> "SmsMessage":
+    def from_json_string(cls, js: str) -> "StatsMessage":
         return cls(**json.loads(js))
