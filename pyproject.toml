@@ -15,8 +15,7 @@ authors = [
 [project.scripts]
 producer = "analog_garage_test.producer.main:main"
 sender = "analog_garage_test.sender.main:main"
-web_monitor = "analog_garage_test.progress_monitor.main:web_monitor"
-cli_monitor = "analog_garage_test.progress_monitor.main:cli_monitor"
+file_monitor = "analog_garage_test.progress_monitor.main:file_monitor"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    print("impotying typeshed")
     from _typeshed import SupportsWrite
 
 from analog_garage_test.lib import constants
@@ -12,7 +11,7 @@ from analog_garage_test.lib.stats_message import StatsMessage
 from analog_garage_test.progress_monitor.monitor import Monitor
 
 
-class CliMonitor(RabbitMQContextManager, Monitor):
+class FileMonitor(RabbitMQContextManager, Monitor):
     """
     A progress monitor which writes status updates to the given output stream.
     The monitor does not handle opening or closing the stream.
@@ -25,7 +24,7 @@ class CliMonitor(RabbitMQContextManager, Monitor):
      NUM FAILURES: {failures}
 AVERAGE WAIT TIME: {wait_time}
      FAILURE RATE: {failure_rate}
---------------------------------------------------------
+------------------------------------------------------------
 """
     NAN_DEFAULT = "N/A"
 

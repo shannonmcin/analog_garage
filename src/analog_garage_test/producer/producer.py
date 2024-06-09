@@ -11,7 +11,7 @@ class Producer(StartStopContextManager, ABC):
     `start` and `stop` methods.
     """
 
-    def __init__(self, num_messages: int):
+    def __init__(self, num_messages: int = 1000):
         self.num_messages = num_messages
 
     def queue_messages(self) -> None:

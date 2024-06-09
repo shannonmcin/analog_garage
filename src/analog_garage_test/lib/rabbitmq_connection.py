@@ -37,11 +37,11 @@ class RabbitMQConnection:
         """
         conn_close = False
         channel_close = False
-        if self.channel:  # and (self.channel.is_open or self.channel.is_opening):
+        if self.channel:
             self.channel.close()
             self.channel = None
             conn_close = True
-        if self.connection:  # and self.connection.is_open:
+        if self.connection:
             self.connection.close()
             self.connection = None
             channel_close = True

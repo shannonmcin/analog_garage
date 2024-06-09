@@ -22,8 +22,6 @@ class Monitor(StartStopContextManager, ABC):
 
         self.refresh_secs = refresh_secs
 
-        self.logger = logging.getLogger(str(type(self)))
-
         # Thread will be used to run the refresh loop
         self.thread: Optional[Thread] = None
         # Event should be set from the main thread to stop the refresh loop
