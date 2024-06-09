@@ -6,13 +6,10 @@ import os
 from typing import List
 
 
-beginning = """version: "3.7"
-
+beginning = """
 services:
   rabbitmq:
     image: rabbitmq:3.13
-    ports:
-      - "5762:5762"
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 10s
@@ -29,7 +26,6 @@ producer_template = """
         condition: service_healthy
     environment:
       - PYTHONUNBUFFERED=true
-      - NUM_MESSAGES={num_messages}
 """
 
 sender_template = """
@@ -41,20 +37,17 @@ sender_template = """
         condition: service_healthy
     environment:
       - PYTHONUNBUFFERED=true
-      - MEAN_WAIT_TIME={mean_wait_time}
-      - FAILURE_RATE={failure_rate}
 """
 
 monitor_template = """
   monitor:
     image: analog_garage_prod:latest
-    command: {type}_monitor
+    command: {kind}_monitor
     depends_on:
       rabbitmq:
         condition: service_healthy
     environment:
       - PYTHONUNBUFFERED=true
-      - REFRESH_SECS={refresh_secs}
 """
 
 
@@ -63,8 +56,10 @@ def read_config(file: str) -> dict:
         return json.load(f)
 
 
-def format_section(template, config: dict) -> str:
-    return template.format(**config)
+def format_section(template, config: dict, **kwargs) -> str:
+    formatted_template = template.format(**kwargs)
+    env_vars = "\n".join(f"      - {key.upper()}={val}" for key, val in config.items())
+    return formatted_template + env_vars
 
 
 def main():
@@ -73,12 +68,16 @@ def main():
     config_path = f"{script_dir}/../config.json"
 
     config = read_config(config_path)
+
+    progress_monitor_kind = config["progress_monitor"].pop("kind")
     parts = [
         beginning,
         format_section(producer_template, config["producer"]),
-        format_section(monitor_template, config["progress_monitor"]),
+        format_section(
+            monitor_template, config["progress_monitor"], kind=progress_monitor_kind
+        ),
     ] + [
-        format_section(sender_template, {"n": idx, **cfg})
+        format_section(sender_template, cfg, n=idx)
         for idx, cfg in enumerate(config["senders"])
     ]
 

@@ -13,7 +13,8 @@
         }
     ],
     "progress_monitor": {
-        "type": "cli",
-        "refresh_secs": 2
+        "kind": "file",
+        "output_location": "stdout",
+        "refresh_secs": 2.0
     }
 }
