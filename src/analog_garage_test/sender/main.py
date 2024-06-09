@@ -1,23 +1,10 @@
-import pika
-import time
+from os import getenv
 
-from analog_garage_test.lib.constants import RABBITMQ_HOST
+from analog_garage_test.sender.wait_sender import WaitSender
 
 
 def main():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST))
-    channel = connection.channel()
-
-    channel.queue_declare(queue="task_queue", durable=True)
-    print(" [*] Waiting for messages. To exit press CTRL+C")
-
-    def callback(ch, method, properties, body):
-        print(f" [x] Received {body.decode()}", flush=True)
-        time.sleep(body.count(b"."))
-        print(" [x] Done")
-        ch.basic_ack(delivery_tag=method.delivery_tag)
-
-    channel.basic_qos(prefetch_count=1)
-    channel.basic_consume(queue="task_queue", on_message_callback=callback)
-
-    channel.start_consuming()
+    with WaitSender(
+        float(getenv("MEAN_WAIT_TIME")), float(getenv("FAILURE_RATE"))
+    ) as sender:
+        sender.listen()
