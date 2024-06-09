@@ -7,7 +7,8 @@ RUN pip install -r requirements.txt
 
 
 FROM build AS test
-RUN mkdir src
+# Install docker and docker compose for use with pytest-docker
+RUN apk add --update docker-cli docker-cli-compose
 COPY requirements/requirements-dev.txt .
 RUN pip install -r requirements-dev.txt
 COPY pyproject.toml .
@@ -18,13 +19,3 @@ FROM build as prod
 COPY src src/
 COPY pyproject.toml .
 RUN pip install .
-
-
-# FROM prod as producer
-# CMD ["producer"]
-
-# FROM prod AS sender
-# CMD ["sender"]
-
-# FROM prod AS monitor
-# CMD ["monitor"]
