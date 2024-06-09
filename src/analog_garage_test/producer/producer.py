@@ -1,38 +1,29 @@
-from random import choices, randint
-from string import printable
-
-import pika
+from abc import ABC, abstractmethod
 
 from analog_garage_test.lib.sms_message import SmsMessage
-from analog_garage_test.lib.constants import RABBITMQ_HOST
+from analog_garage_test.lib.context_manager import StartStopContextManager
 
 
-class Producer:
-    MAX_MSG_LEN = 100
+class Producer(StartStopContextManager, ABC):
+    """
+    An interface for a producer which produces some number of messages and queues them.
+    If messages are published to a shared resource, that resource should be managed in the
+    `start` and `stop` methods.
+    """
 
-    def __init__(self, num_messages: int = 1000, num_phone_numbers: int = 10):
-        self.num_msgs = num_messages
-        self.connection = None
-        self.channel = None
-
-    def connect(self):
-        self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=RABBITMQ_HOST)
-        )
-        self.channel = self.connection.channel()
-
-    def stop(self):
-        self.connection.close()
+    def __init__(self, num_messages: int):
+        self.num_messages = num_messages
 
     def queue_messages(self) -> None:
-        for i in range(self.num_msgs):
-            self.queue_message("6034595127")
+        for _ in range(self.num_messages):
+            self.queue_message(self.get_next_message())
 
-    def queue_message(self, phone_num: str) -> None:
-        msg = str(self.generate_message(phone_num))
-        self.channel.basic_publish(exchange="", routing_key="task_queue", body=msg)
+    @abstractmethod
+    def get_next_message(self) -> SmsMessage:
+        """Get the next message to be queued."""
+        pass
 
-    def generate_message(self, phone_num: str) -> SmsMessage:
-        msg_len = randint(0, self.MAX_MSG_LEN)
-        text = "".join(choices(printable, k=msg_len))
-        return SmsMessage(text, phone_num)
+    @abstractmethod
+    def queue_message(self, msg: SmsMessage) -> bool:
+        """Queue the given message to be consumed downstream."""
+        pass

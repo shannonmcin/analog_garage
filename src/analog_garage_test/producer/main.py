@@ -1,12 +1,8 @@
-from time import sleep
+from os import getenv
 
-from analog_garage_test.producer.producer import Producer
+from analog_garage_test.producer.random_producer import RandomProducer
 
 
 def main():
-    prod = Producer()
-    prod.connect()
-    prod.queue_messages()
-    # while True:
-    #     print("hello from producer please?")
-    #     sleep(1)
+    with RandomProducer(num_messages=int(getenv("NUM_MESSAGES"))) as prod:
+        prod.queue_messages()
