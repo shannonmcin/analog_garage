@@ -1,0 +1,19 @@
+{
+    "producer": {
+        "num_messages": 50
+    },
+    "senders": [
+        {
+            "mean_wait_time": 1.0,
+            "failure_rate": 0.09
+        },
+        {
+            "mean_wait_time": 1.3,
+            "failure_rate": 0.03
+        }
+    ],
+    "progress_monitor": {
+        "type": "cli",
+        "refresh_secs": 2
+    }
+}
