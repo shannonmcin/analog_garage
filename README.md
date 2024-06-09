@@ -60,4 +60,5 @@ For non-Python dependencies, the `Dockerfile` should be modified to install pack
   - docker user is root so if e.g. black updates a file, that file becomes owned by root
   - but changing docker user to user with same uid/gid as host machine causes issues with pip
 - figure out mypy issues (error: Skipping analyzing "analog_garage_test.lib": module is installed, but missing library stubs or py.typed marker  [import-untyped])
-  - this might be an issue with newer versions of setuptools (https://github.com/python/mypy/issues/13392) but we need setuptools >= 66.0.0 to be able to run `pip install -e .` without a `setup.py` file
+  - this might be an issue with newer versions of setuptools (https://github.com/python/mypy/issues/13392) but we need setuptools >= 64.0 to be able to run `pip install -e .` without a `setup.py` file ([changelog](https://setuptools.pypa.io/en/latest/history.html#v64-0-0))
+  - some workarounds documented [here](https://microsoft.github.io/pyright/#/import-resolution?id=editable-installs)
